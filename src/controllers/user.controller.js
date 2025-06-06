@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
+
 const generateAccessandRefreshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -217,9 +218,9 @@ const changeCurrentPassword = asynchandler(async(req, res) => {
     const {oldPassword, newPassword} = req.body;
 
     const user = await User.findById(req.user?._id)
-    user.isPasswordCorrect(oldPassword)   
+    const isPassswordValid = user.isPasswordCorrect(oldPassword)   
 
-    if(!isPasswordCorrect){
+    if(!isPassswordValid){
         throw new ApiError(400, "Invalid old password.")
     }
 
@@ -240,8 +241,8 @@ const getCurrentUser = asynchandler(async(req, res) => {
 const updateAccountDetails = asynchandler(async(req, res) => {
     const {fullName, email } = req.body
 
-    if(!fullName || !email){
-        throw new ApiError(400, "ALl details are required.")
+    if(!(fullName || email)){
+        throw new ApiError(400, "All details are required.")
     }
 
     const user = await User.findByIdAndUpdate(req.user?._id,
@@ -287,7 +288,7 @@ const updateAvatarImage = asynchandler(async(req, res) => {
 })
 
 const updateCoverImage = asynchandler(async(req, res) => {
-   const avatarLocalPath =  req.file?.path
+   const coverImageLocalPath =  req.file?.path
    if(!coverImageLocalPath){
     throw new ApiError(400, "Cover Image file is missing")
    }
@@ -301,7 +302,7 @@ const updateCoverImage = asynchandler(async(req, res) => {
     req.user?._id,
     {
         $set:{
-            avatar: avatar.url
+            coverImage: coverImage.url
         }
     }, {new: true}
    ).select("-password")
@@ -348,11 +349,11 @@ const getUserChannelProfile = asynchandler(async(req, res) => {
                     $size: "$subscribers"
                 },
                 channelSubscribedTocount:{
-                    $size: "$subsribedTo"
+                    $size: "$subscribedTo"
                 },
                 isSubscribed:{
                     $cond:{
-                        if: {$in : [req.user?._id, "$subsribers.subscriber"]},
+                        if: {$in : [req.user?._id, "$subscribers.subscriber"]},
                         then: true,
                         else: false
                     }
