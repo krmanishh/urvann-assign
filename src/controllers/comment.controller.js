@@ -13,14 +13,14 @@ const getVideoComments = asynchandler(async (req, res) => {
 
 const addComment = asynchandler(async (req, res) => {
     // TODO: add a comment to a video
-    const videoId = req.body._id
+    const commentId = req.params
     const {content} = req.body
     if(!videoId || !content) {
         throw new ApiError(400, "Video ID and content are required")
     }
     const addedComment = await Comment.create({
       content,
-      video: videoId,
+      commentId: req.comment._id,
       owner: req.user._id
     })
     if(!addedComment) {
