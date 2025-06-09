@@ -5,7 +5,6 @@ import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
-import { asynchandler } from "../utils/asyncHandler.js";
 
 
 const generateAccessandRefreshTokens = async(userId) => {
