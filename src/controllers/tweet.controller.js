@@ -3,9 +3,9 @@ import {Tweet} from "../models/tweet.model.js"
 import {User} from "../models/user.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
-import {asyncHandler} from "../utils/asyncHandler.js"
+import { asynchandler } from "../utils/asyncHandler.js"
 
-const createTweet = asyncHandler(async (req, res) => {
+const createTweet = asynchandler(async (req, res) => {
     //TODO: create tweet
     const {content} = req.body
     if(!content){
@@ -13,7 +13,7 @@ const createTweet = asyncHandler(async (req, res) => {
     }
     const createdTweet = await Tweet.create(
       {
-        owner: req.params._id,
+        owner: req.user._id,
         content,
       }
     )
@@ -26,29 +26,32 @@ const createTweet = asyncHandler(async (req, res) => {
     )
 })
 
-const getUserTweets = asyncHandler(async (req, res) => {
-    // TODO: get user tweets
-    const {userId} = req.params
-    if(!isValidObjectId(userId)){
-      throw new ApiError(400, "Invalid User ID")
-    }
-    const userTweets = await Tweet.find(
-      {owner : userId
-    }
-    ,
-    {
-      content:1,
-      createdAt:1,
-      updatedAt:1
-    }).populate("userId", "name username")
-    return res
-    .status(200)
-    .json(
-      new ApiResponse(200, userTweets, "User Tweets fetched successfully")
-    )
-})
+const getUserTweets = asynchandler(async (req, res) => {
+  console.log("Logged-in user:", req.user);
 
-const updateTweet = asyncHandler(async (req, res) => {
+  const owner = req.user._id;
+
+  if (!isValidObjectId(owner)) {
+    throw new ApiError(400, "Invalid User ID");
+  }
+  
+  const userTweets = await Tweet.find(
+    { owner },
+    {
+      content: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    }
+  ).populate("owner", "name username");
+
+  console.log("Tweets found:", userTweets);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, userTweets, "User Tweets fetched successfully"));
+});
+
+const updateTweet = asynchandler(async (req, res) => {
     //TODO: update tweet
     const {tweetId} = req.params
     const {content} = req.body
@@ -75,7 +78,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 
 })
 
-const deleteTweet = asyncHandler(async (req, res) => {
+const deleteTweet = asynchandler(async (req, res) => {
     //TODO: delete tweet
     const { tweetId } = req.params
     if(!isValidObjectId(tweetId)){
@@ -103,3 +106,4 @@ export {
     updateTweet,
     deleteTweet
 }
+
