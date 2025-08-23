@@ -1,32 +1,36 @@
 import { Router } from "express";
-import { changeCurrentPassword, getCurrentUser, logoutUser, refreshAccessToken, registerUser, updateAccountDetails } from "../controllers/user.controller.js";
-import { upload } from "../middlewares/multer.middleware.js";
+import {
+  registerUser,
+  loginUser,
+  sendOtp,
+  verifyOtp,
+  logoutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateAccountDetails,
+} from "../controllers/user.controller.js";
+
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// ✅ Register user
-router.route("/register").post(
-  upload.fields([
-    {
-      name: "avatar",
-      maxCount: 1
-    },
-    {
-      name: "coverImage",
-      maxCount: 1
-    }
-  ]),
-  registerUser
-);
+// 🔹 Register
+router.post("/register", registerUser);
 
-// router.route("/login").post(loginUser);
+// 🔹 Login
+router.post("/login", loginUser);
 
-// ✅ keep secure routes
-router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/refresh-token").post(refreshAccessToken);
-router.route("/change-password").post(verifyJWT, changeCurrentPassword);
-router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("/update-account").patch(verifyJWT, updateAccountDetails);
+// 🔹 OTP Login Flow
+router.post("/send-otp", sendOtp);
+router.post("/verify-otp", verifyOtp);
+
+// 🔹 Secure Routes (JWT protected)
+router.post("/logout", verifyJWT, logoutUser);
+router.post("/refresh-token", refreshAccessToken);
+router.post("/change-password", verifyJWT, changeCurrentPassword);
+router.get("/current-user", verifyJWT, getCurrentUser);
+router.patch("/update-account", verifyJWT, updateAccountDetails);
 
 export default router;
+
