@@ -9,6 +9,7 @@ const addToCart = asynchandler(async (req, res) => {
   const { plantId, quantity } = req.body;
   const userId = req.user?._id; // ✅ safe check
 
+  
   if (!plantId) throw new ApiError(400, "Plant ID is required");
   if (quantity && quantity <= 0) throw new ApiError(400, "Quantity must be greater than 0");
 

@@ -15,3 +15,4 @@ cartRouter.post("/remove", verifyJWT, removeFromCart);
 cartRouter.post("/clear", verifyJWT, clearCart);
 
 export default cartRouter;
+
