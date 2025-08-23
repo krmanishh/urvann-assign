@@ -7,13 +7,13 @@ import {
   deletePlant,
 } from "../controllers/plant.controller.js";
 
-const router = Router();
+const plantRouter = Router();
 
 // CRUD endpoints
-router.post("/", createPlant);
-router.get("/", getAllPlants);
-router.get("/:id", getPlantById);
-router.put("/:id", updatePlant);
-router.delete("/:id", deletePlant);
+plantRouter.post("/", createPlant);
+plantRouter.get("/", getAllPlants);
+plantRouter.get("/:id", getPlantById);
+plantRouter.put("/:id", updatePlant);
+plantRouter.delete("/:id", deletePlant);
 
-export default router;
+export default plantRouter;
