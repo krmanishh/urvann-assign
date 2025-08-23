@@ -7,9 +7,10 @@ import { asynchandler } from "../utils/asyncHandler.js";
 // 🔹 Add item to cart
 const addToCart = asynchandler(async (req, res) => {
   const { plantId, quantity } = req.body;
-  const userId = req.user._id; // assume auth middleware sets req.user
+  const userId = req.user?._id; // ✅ safe check
 
   if (!plantId) throw new ApiError(400, "Plant ID is required");
+  if (quantity && quantity <= 0) throw new ApiError(400, "Quantity must be greater than 0");
 
   const plant = await Plant.findById(plantId);
   if (!plant) throw new ApiError(404, "Plant not found");
@@ -31,8 +32,9 @@ const addToCart = asynchandler(async (req, res) => {
     } else {
       cart.items.push({ plant: plantId, quantity: quantity || 1 });
     }
-    await cart.save();
   }
+
+  await cart.save();
 
   return res
     .status(200)
@@ -41,10 +43,10 @@ const addToCart = asynchandler(async (req, res) => {
 
 // 🔹 Get user cart
 const getCart = asynchandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
 
   const cart = await Cart.findOne({ user: userId }).populate("items.plant");
-  if (!cart) throw new ApiError(404, "Cart not found");
+  if (!cart) return res.status(200).json(new ApiResponse(200, { items: [] }, "Cart is empty"));
 
   return res
     .status(200)
@@ -54,14 +56,19 @@ const getCart = asynchandler(async (req, res) => {
 // 🔹 Remove item from cart
 const removeFromCart = asynchandler(async (req, res) => {
   const { plantId } = req.body;
-  const userId = req.user._id;
+  const userId = req.user?._id;
+
+  if (!plantId) throw new ApiError(400, "Plant ID is required");
 
   const cart = await Cart.findOne({ user: userId });
   if (!cart) throw new ApiError(404, "Cart not found");
 
-  cart.items = cart.items.filter(
-    (item) => item.plant.toString() !== plantId
-  );
+  const initialLength = cart.items.length;
+  cart.items = cart.items.filter((item) => item.plant.toString() !== plantId);
+
+  if (cart.items.length === initialLength)
+    throw new ApiError(404, "Item not found in cart");
+
   await cart.save();
 
   return res
@@ -71,7 +78,7 @@ const removeFromCart = asynchandler(async (req, res) => {
 
 // 🔹 Clear cart
 const clearCart = asynchandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
 
   const cart = await Cart.findOneAndUpdate(
     { user: userId },
@@ -85,4 +92,3 @@ const clearCart = asynchandler(async (req, res) => {
 });
 
 export { addToCart, getCart, removeFromCart, clearCart };
-

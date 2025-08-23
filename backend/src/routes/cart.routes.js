@@ -5,6 +5,7 @@ import {
   removeFromCart,
   clearCart,
 } from "../controllers/cart.controller.js";
+
 import { verifyJWT } from "../middlewares/auth.middleware.js"; 
 const cartRouter = Router();
 
