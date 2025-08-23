@@ -23,13 +23,6 @@ const userSchema = new Schema({
     trim: true,
     index: true,
   },
-  avatar:{
-    type: String,
-    required: true,
-  },
-  coverImage: {
-    type: String
-  },
 
   password:{
     type: String,
