@@ -7,15 +7,34 @@ import {
   deletePlant,
 } from "../controllers/plant.controller.js";
 
-import { upload } from "../middlewares/multer.middleware.js"; // 👈 multer import
+import { upload } from "../middlewares/multer.middleware.js";
+import { verifyJWT, verifyAdmin } from "../middlewares/auth.middleware.js";
 
 const plantRouter = Router();
 
-// CRUD endpoints
-plantRouter.post("/", upload.single("image"), createPlant); //file upload ke liye middleware add
+// ✅ CRUD endpoints
+
+// Public routes
 plantRouter.get("/", getAllPlants);
 plantRouter.get("/:id", getPlantById);
-plantRouter.put("/:id", upload.single("image"), updatePlant); 
-plantRouter.delete("/:id", deletePlant);
+
+// Protected + Admin-only routes
+plantRouter.post(
+  "/",
+  verifyJWT,
+  verifyAdmin,
+  upload.single("image"),
+  createPlant
+);
+
+plantRouter.put(
+  "/:id",
+  verifyJWT,
+  verifyAdmin,
+  upload.single("image"),
+  updatePlant
+);
+
+plantRouter.delete("/:id", verifyJWT, verifyAdmin, deletePlant);
 
 export default plantRouter;

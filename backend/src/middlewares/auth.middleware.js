@@ -30,3 +30,10 @@ const token = req.cookies?.accessToken || (authHeader && authHeader.startsWith("
  throw new ApiError(401, error?.message || "Invalid access token") 
 }
 })
+
+export const verifyAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    return next();
+  }
+  throw new ApiError(403, "Access denied. Admins only.");
+};

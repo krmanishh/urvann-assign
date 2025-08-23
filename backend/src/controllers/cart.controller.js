@@ -17,7 +17,7 @@ const addToCart = asyncHandler(async (req, res) => {
   if (!plant) throw new ApiError(404, "Plant not found");
 
   let cart = await Cart.findOne({ user: userId });
-
+  
   if (!cart) {
     cart = await Cart.create({
       user: userId,
