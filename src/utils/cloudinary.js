@@ -2,7 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 import fs from "fs";
 
-dotenv.config(); // MUST be here before cloudinary.config()
+dotenv.config(); // Load env vars
 
 // Cloudinary Configuration
 cloudinary.config({ 
@@ -18,16 +18,18 @@ const uploadOnCloudinary = async (localFilePath) => {
 
     // Upload the file
     const response = await cloudinary.uploader.upload(localFilePath, {
+      folder: "plants",
       resource_type: "auto"
     });
-
 
     // Delete local file after upload
     fs.unlinkSync(localFilePath);
 
-    return response;
+    // Return only secure URL
+    return response.secure_url;
+
   } catch (error) {
-    // Cleanup
+    // Cleanup in case of failure
     if (fs.existsSync(localFilePath)) {
       fs.unlinkSync(localFilePath);
     }

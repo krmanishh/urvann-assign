@@ -7,13 +7,15 @@ import {
   deletePlant,
 } from "../controllers/plant.controller.js";
 
+import { upload } from "../middlewares/multer.js"; // 👈 multer import
+
 const plantRouter = Router();
 
 // CRUD endpoints
-plantRouter.post("/", createPlant);
+plantRouter.post("/", upload.single("image"), createPlant); //file upload ke liye middleware add
 plantRouter.get("/", getAllPlants);
 plantRouter.get("/:id", getPlantById);
-plantRouter.put("/:id", updatePlant);
+plantRouter.put("/:id", upload.single("image"), updatePlant); 
 plantRouter.delete("/:id", deletePlant);
 
 export default plantRouter;

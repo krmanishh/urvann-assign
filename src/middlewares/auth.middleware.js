@@ -27,6 +27,6 @@ const token = req.cookies?.accessToken || (authHeader && authHeader.startsWith("
     req.user = user;
     next()
 } catch (error) {
- throw new ApiError(401, error?.message || "Ivalid access token") 
+ throw new ApiError(401, error?.message || "Invalid access token") 
 }
 })

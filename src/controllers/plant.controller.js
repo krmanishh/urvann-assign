@@ -4,8 +4,9 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asynchandler } from "../utils/asyncHandler.js";
 
 // 🔹 Create Plant
+// Create Plant
 const createPlant = asynchandler(async (req, res) => {
-  let { name, price, categories, inStock, description, imageUrl } = req.body;
+  let { name, price, categories, inStock, description } = req.body;
 
   if (!name || !price) {
     throw new ApiError(400, "Name and Price are required");
@@ -15,6 +16,9 @@ const createPlant = asynchandler(async (req, res) => {
   if (categories && !Array.isArray(categories)) {
     categories = [categories];
   }
+
+  // multer se file ka path lena
+  let imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   const plant = await Plant.create({
     name,

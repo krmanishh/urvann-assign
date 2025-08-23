@@ -14,7 +14,7 @@ const plantSchema = new Schema(
       min: [0, "Price cannot be negative"],
     },
     categories: {
-      type: [String], // ✅ multiple categories
+      type: [String], // ✅ multiple categories allowed
       required: [true, "At least one category is required"],
       enum: [
         "Indoor",
@@ -24,11 +24,19 @@ const plantSchema = new Schema(
         "Home Decor",
         "Flowering",
         "Medicinal",
-      ], // ✅ restrict to known categories
+      ],
     },
-    availability: {
+    inStock: {
       type: Boolean,
       default: true, // ✅ true = In Stock
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    imageUrl: {
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true }
