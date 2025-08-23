@@ -1,18 +1,21 @@
-import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import Navbar from "./components/Navbar";
-import AppRoutes from "./routes/AppRoutes";
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import AddPlant from './pages/AddPlant'
+import PlantDetails from './pages/PlantDetails'
+import AppRoutes from './routes/AppRoutes'
 
-const App = () => {
+function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar />
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <main className="container mx-auto px-4 py-8">
         <AppRoutes />
-      </Router>
-    </AuthProvider>
-  );
-};
+      </main>
+    </div>
+  )
+}
 
-export default App;
+export default App
