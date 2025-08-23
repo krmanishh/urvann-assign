@@ -3,20 +3,20 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-// Create Plant
 const createPlant = asyncHandler(async (req, res) => {
   let { name, price, categories, inStock, description } = req.body;
 
-  if (!name || !price) {
-    throw new ApiError(400, "Name and Price are required");
+  if (!name || !price || !categories || !inStock || !description) {
+    throw new ApiError(
+      400,
+      "Name, Price, Categories, InStock and Description are required"
+    );
   }
 
-  // Ensure categories is array
   if (categories && !Array.isArray(categories)) {
     categories = [categories];
   }
 
-  // multer se file ka path lena
   let imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   const plant = await Plant.create({
@@ -33,19 +33,31 @@ const createPlant = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, plant, "✅ Plant created successfully"));
 });
 
-// 🔹 Get All Plants (with optional filters)
+// 🔹 Get All Plants (with search & filters)
 const getAllPlants = asyncHandler(async (req, res) => {
-  const { category, inStock } = req.query;
+  const { search, category, inStock } = req.query;
 
   let filter = {};
-  if (category) {
-    filter.categories = { $regex: category, $options: "i" }; // case-insensitive search
+
+  // 🔎 Case-insensitive search by name OR categories
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { categories: { $regex: search, $options: "i" } },
+    ];
   }
+
+  // 🎯 Filter by category (dropdown exact match, but case-insensitive)
+  if (category) {
+    filter.categories = { $regex: `^${category}$`, $options: "i" };
+  }
+
+  // 📦 Filter by stock availability
   if (inStock !== undefined) {
     filter.inStock = inStock === "true";
   }
 
-  const plants = await Plant.find(filter);
+  const plants = await Plant.find(filter).sort({ name: 1 }); // sort alphabetically
 
   return res
     .status(200)
@@ -64,12 +76,11 @@ const getPlantById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, plant, "✅ Plant fetched successfully"));
 });
 
-// 🔹 Update Plant (Partial Update Allowed)
+// 🔹 Update Plant
 const updatePlant = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let updateData = req.body;
 
-  // Ensure categories is array if provided
   if (updateData.categories && !Array.isArray(updateData.categories)) {
     updateData.categories = [updateData.categories];
   }
