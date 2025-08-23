@@ -1,10 +1,10 @@
 import { Plant } from "../models/plant.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { asynchandler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 // Create Plant
-const createPlant = asynchandler(async (req, res) => {
+const createPlant = asyncHandler(async (req, res) => {
   let { name, price, categories, inStock, description } = req.body;
 
   if (!name || !price) {
@@ -34,7 +34,7 @@ const createPlant = asynchandler(async (req, res) => {
 });
 
 // 🔹 Get All Plants (with optional filters)
-const getAllPlants = asynchandler(async (req, res) => {
+const getAllPlants = asyncHandler(async (req, res) => {
   const { category, inStock } = req.query;
 
   let filter = {};
@@ -53,7 +53,7 @@ const getAllPlants = asynchandler(async (req, res) => {
 });
 
 // 🔹 Get Single Plant
-const getPlantById = asynchandler(async (req, res) => {
+const getPlantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const plant = await Plant.findById(id);
@@ -65,7 +65,7 @@ const getPlantById = asynchandler(async (req, res) => {
 });
 
 // 🔹 Update Plant (Partial Update Allowed)
-const updatePlant = asynchandler(async (req, res) => {
+const updatePlant = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let updateData = req.body;
 
@@ -74,7 +74,11 @@ const updatePlant = asynchandler(async (req, res) => {
     updateData.categories = [updateData.categories];
   }
 
-  const plant = await Plant.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+  const plant = await Plant.findByIdAndUpdate(
+    id,
+    { $set: updateData },
+    { new: true }
+  );
 
   if (!plant) throw new ApiError(404, "❌ Plant not found");
 
@@ -84,7 +88,7 @@ const updatePlant = asynchandler(async (req, res) => {
 });
 
 // 🔹 Delete Plant
-const deletePlant = asynchandler(async (req, res) => {
+const deletePlant = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const plant = await Plant.findByIdAndDelete(id);

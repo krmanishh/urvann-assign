@@ -3,10 +3,10 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { asynchandler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 // 🔹 Send OTP
-export const sendOTP = asynchandler(async (req, res) => {
+export const sendOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
   if (!email) throw new ApiError(400, "Email is required");
 
@@ -32,7 +32,7 @@ export const sendOTP = asynchandler(async (req, res) => {
 });
 
 // 🔹 Verify OTP
-export const verifyOTP = asynchandler(async (req, res) => {
+export const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) throw new ApiError(400, "Email & OTP are required");
 
