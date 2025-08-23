@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asynchandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
+
 // 🔹 Send OTP
 const sendOTP = asynchandler(async (req, res) => {
   const { email } = req.body;
