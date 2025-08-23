@@ -7,7 +7,7 @@ import {
   deletePlant,
 } from "../controllers/plant.controller.js";
 
-import { upload } from "../middlewares/multer.js"; // 👈 multer import
+import { upload } from "../middlewares/multer.middleware.js"; // 👈 multer import
 
 const plantRouter = Router();
 
