@@ -18,25 +18,8 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    fullName: {
-      type: String,
-      required: true,
-      trim: true,
-      index: true,
-    },
-
-    // ✅ Password optional (in case you still want both modes)
-    password: {
-      type: String,
-      minlength: [6, "Password must be at least 6 characters"],
-    },
-
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
-
+    fullName: { type: String, required: true, trim: true, index: true },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
     refreshToken: String,
     otpCode: String,
     otpExpiry: Date,
@@ -44,7 +27,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-// ✅ Generate Access Token
+// 🔹 Generate JWT Access Token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -55,21 +38,15 @@ userSchema.methods.generateAccessToken = function () {
       role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m",
-    }
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" }
   );
 };
 
-// ✅ Generate Refresh Token
+// 🔹 Generate JWT Refresh Token
 userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign(
-    { _id: this._id },
-    process.env.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d",
-    }
-  );
+  return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d",
+  });
 };
 
 export const User = mongoose.model("User", userSchema);
