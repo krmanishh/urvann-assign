@@ -3,7 +3,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asynchandler } from "../utils/asyncHandler.js";
 
-// 🔹 Create Plant
 // Create Plant
 const createPlant = asynchandler(async (req, res) => {
   let { name, price, categories, inStock, description } = req.body;
