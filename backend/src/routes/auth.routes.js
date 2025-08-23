@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { requestOtp, verifyOtp } from "../controllers/auth.controller.js";
+import { sendOTP, verifyOTP } from "../controllers/auth.controller.js";
 
-const router = Router();
+const authRouter = Router();
 
-// ✅ Step 1: Request OTP
-router.post("/request-otp", requestOtp);
+// Step 1: Request OTP
+authRouter.post("/request-otp", sendOTP);
 
-// ✅ Step 2: Verify OTP (ye login ka kaam karega)
-router.post("/verify-otp", verifyOtp);
+// Step 2: Verify OTP
+authRouter.post("/verify-otp", verifyOTP);
 
-export default router;
+export default authRouter;

@@ -16,14 +16,14 @@ app.use(cookieParser())
 
 //routes import
 import userRouter from './routes/user.routes.js';
-import authRoutes from "./routes/auth.routes.js";
+import authRouter from './routes/auth.routes.js';
 import plantRouter from './routes/plant.routes.js';
 import cartRouter from './routes/cart.routes.js';
 
 
 //routes declaration
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/plants", plantRouter);
 app.use("/api/v1/cart", cartRouter);
 
