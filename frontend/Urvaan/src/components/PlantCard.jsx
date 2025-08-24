@@ -76,4 +76,74 @@ const PlantCard = ({ plant }) => {
 
         {/* Content */}
         <div className="p-4">
-          {/*
+          {/* Plant Name */}
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {plant.name}
+          </h3>
+
+          {/* Price */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-2xl font-bold text-primary-600">
+              {formatPrice(plant.price)}
+            </span>
+            <div className="flex items-center space-x-1 text-yellow-400">
+              <Star className="h-4 w-4 fill-current" />
+              <span className="text-sm text-gray-600">4.5</span>
+            </div>
+          </div>
+
+          {/* Categories */}
+          <div className="flex flex-wrap gap-1 mb-3">
+            {plant.categories?.slice(0, 3).map((category, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-primary-100 hover:text-primary-800 transition-colors"
+              >
+                {category}
+              </span>
+            ))}
+            {plant.categories?.length > 3 && (
+              <span className="px-2 py-1 text-xs bg-gray-100 text-gray-500 rounded-full">
+                +{plant.categories.length - 3}
+              </span>
+            )}
+          </div>
+
+          {/* Description */}
+          {plant.description && (
+            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+              {plant.description}
+            </p>
+          )}
+        </div>
+      </Link>
+
+      {/* Action Button */}
+      <div className="px-4 pb-4">
+        <button
+          onClick={handleAddToCart}
+          disabled={!plant.inStock || isLoading}
+          className={`w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+            plant.inStock 
+              ? 'bg-primary-600 text-white hover:bg-primary-700 hover:shadow-md active:scale-95 disabled:opacity-50' 
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <span>Adding...</span>
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-4 w-4" />
+              <span>{plant.inStock ? 'Add to Cart' : 'Out of Stock'}</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default PlantCard
